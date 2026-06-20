@@ -1,6 +1,6 @@
 #pragma once
-// mlcpp — GPT char-level: kiến trúc Transformer decoder hoàn chỉnh, tái dùng autograd.
-// Một đầu attention (single-head) cho gọn; multi-head là phần mở rộng.
+// mlcpp — GPT: kiến trúc Transformer decoder hoàn chỉnh, tái dùng autograd.
+// Multi-head attention + weight tying (chia sẻ embedding đầu vào/đầu ra).
 #include <vector>
 
 #include "mlcpp/dl/autograd.hpp"
@@ -42,7 +42,7 @@ private:
     Tensor pos_emb_;       // block_size x n_embd
     std::vector<Block> blocks_;
     Tensor lnf_g_, lnf_b_;  // LayerNorm cuối
-    Tensor head_W_, head_b_;  // n_embd -> vocab
+    Tensor head_b_;         // bias đầu ra (trọng số đầu ra = tok_emb_ — weight tying)
     std::vector<Tensor> params_;
 };
 

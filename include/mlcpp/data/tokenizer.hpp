@@ -1,31 +1,41 @@
 #pragma once
-// mlcpp — tokenizer mức ký tự UTF-8. Tách văn bản thành từng ký tự trọn vẹn
-// (1–4 byte) thay vì từng byte, nên tiếng Việt có dấu được xử lý đúng và
-// văn bản sinh ra luôn là UTF-8 hợp lệ.
+// mlcpp — tokenizer hỗ trợ 2 mức:
+//   Char: mỗi ký tự UTF-8 là 1 token (đúng cho mọi văn bản, vocab nhỏ).
+//   Word: mỗi âm tiết/từ là 1 token, dấu cách & dấu câu là token riêng
+//         -> sinh ra từ tiếng Việt có thật, ngữ cảnh dài hơn, văn bản tự nhiên hơn.
 #include <map>
 #include <string>
 #include <vector>
 
 namespace mlcpp {
 
-class CharTokenizer {
+class Tokenizer {
 public:
-    // Xây bộ từ vựng từ văn bản (theo thứ tự ký tự xuất hiện lần đầu).
-    void build(const std::string& text);
+    enum class Level { Char, Word };
 
-    std::vector<int> encode(const std::string& text) const;  // bỏ qua ký tự lạ
-    std::string decode(const std::vector<int>& ids) const;
+    // Xây từ vựng từ văn bản. Với Word, max_vocab>0 giới hạn còn các token hay gặp nhất
+    // (phần còn lại quy về <unk>). max_vocab=0 = giữ tất cả.
+    void build(const std::string& text, Level level = Level::Char, std::size_t max_vocab = 0);
+
+    std::vector<int> encode(const std::string& text) const;  // token lạ -> <unk> (Word) hoặc bỏ (Char)
+    std::string decode(const std::vector<int>& ids) const;   // nối token (tái lập đúng văn bản)
 
     std::size_t vocab_size() const { return itos_.size(); }
     const std::string& token(int id) const { return itos_[id]; }
-    bool contains(const std::string& ch) const { return stoi_.count(ch) > 0; }
+    Level level() const { return level_; }
+    int unk_id() const { return unk_; }  // -1 nếu không có
 
-    // Tiện ích: tách một chuỗi UTF-8 thành danh sách ký tự (mỗi phần tử 1 ký tự).
+    // Tách chuỗi UTF-8 thành ký tự / thành từ (mỗi từ là run chữ cái; dấu cách & dấu câu riêng).
     static std::vector<std::string> split_utf8(const std::string& text);
+    static std::vector<std::string> split_words(const std::string& text);
 
 private:
+    std::vector<std::string> tokens_of(const std::string& text) const;
+
+    Level level_ = Level::Char;
     std::map<std::string, int> stoi_;
     std::vector<std::string> itos_;
+    int unk_ = -1;
 };
 
 }  // namespace mlcpp

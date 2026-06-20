@@ -24,22 +24,22 @@ void test_transformer() {
     CHECK(loss.value()(0, 0) > 0.0);
     loss.backward();
 
-    // Kiểm tra bằng sai phân hữu hạn trên head_W (tham số gần cuối, dùng toàn bộ).
-    // Việc này xác thực đồng thời: embedding, layernorm, attention(softmax/transpose/mul),
-    // gelu, residual và cross_entropy.
-    Tensor head_W = model.params()[model.params().size() - 2];
+    // Kiểm tra bằng sai phân hữu hạn trên tok_emb (params[0]) — nhờ weight tying nó
+    // được dùng ở CẢ embedding đầu vào lẫn chiếu đầu ra, nên xác thực đồng thời:
+    // embedding, layernorm, attention(softmax/transpose/mul), gelu, residual, tied head, cross_entropy.
+    Tensor tok_emb = model.params()[0];
     const double eps = 1e-4;
     int checked = 0;
-    for (std::size_t i = 0; i < head_W.rows() && checked < 6; ++i)
-        for (std::size_t j = 0; j < head_W.cols() && checked < 6; ++j) {
-            double orig = head_W.value()(i, j);
-            head_W.value()(i, j) = orig + eps;
+    for (std::size_t i = 0; i < tok_emb.rows() && checked < 6; ++i)
+        for (std::size_t j = 0; j < tok_emb.cols() && checked < 6; ++j) {
+            double orig = tok_emb.value()(i, j);
+            tok_emb.value()(i, j) = orig + eps;
             double lp = loss_fn().value()(0, 0);
-            head_W.value()(i, j) = orig - eps;
+            tok_emb.value()(i, j) = orig - eps;
             double lm = loss_fn().value()(0, 0);
-            head_W.value()(i, j) = orig;
+            tok_emb.value()(i, j) = orig;
             double numeric = (lp - lm) / (2.0 * eps);
-            CHECK_NEAR(numeric, head_W.grad()(i, j), 1e-4);
+            CHECK_NEAR(numeric, tok_emb.grad()(i, j), 1e-4);
             ++checked;
         }
 

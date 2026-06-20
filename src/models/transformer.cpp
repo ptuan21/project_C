@@ -40,8 +40,7 @@ GPT::GPT(const GPTConfig& cfg, Rng& rng) : cfg_(cfg) {
 
     lnf_g_ = ones_row(E);
     lnf_b_ = zeros(1, E);
-    head_W_ = init_weight(E, cfg.vocab_size, s, rng);
-    head_b_ = zeros(1, cfg.vocab_size);
+    head_b_ = zeros(1, cfg.vocab_size);  // weight tying: trọng số đầu ra = tok_emb_
 
     // Gom toàn bộ tham số để đưa vào optimizer.
     params_ = {tok_emb_, pos_emb_};
@@ -52,7 +51,6 @@ GPT::GPT(const GPTConfig& cfg, Rng& rng) : cfg_(cfg) {
     }
     params_.push_back(lnf_g_);
     params_.push_back(lnf_b_);
-    params_.push_back(head_W_);
     params_.push_back(head_b_);
 }
 
@@ -105,7 +103,8 @@ Tensor GPT::forward(const std::vector<int>& ids) const {
     Tensor x = add(embedding(tok_emb_, ids), embedding(pos_emb_, pos));
     for (const auto& b : blocks_) x = block_forward(b, x, mask);
     x = layernorm(x, lnf_g_, lnf_b_);
-    return add(matmul(x, head_W_), head_b_);  // logits T x vocab
+    // Weight tying: logits = x · tok_emb_ᵀ + bias (chia sẻ ma trận embedding).
+    return add(matmul(x, transpose(tok_emb_)), head_b_);  // logits T x vocab
 }
 
 }  // namespace mlcpp

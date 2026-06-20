@@ -1,0 +1,16 @@
+# Build output
+build/
+*.o
+
+# Corpus / dữ liệu lớn (tạo lại bằng scripts/)
+data/vietnamese_large.txt
+
+# Dữ liệu patent (rất lớn / sinh ra) — thuộc dự án patent riêng
+data/uspto_out/
+data/patent_index/
+
+# Trọng số đã lưu
+*.bin
+
+# Log
+*.log

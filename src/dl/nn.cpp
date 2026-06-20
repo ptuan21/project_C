@@ -3,7 +3,23 @@
 #include <algorithm>
 #include <cmath>
 
+#include "mlcpp/core/quantize.hpp"
+
 namespace mlcpp {
+
+QuantStats quantize_params_in_place(const std::vector<Tensor>& params) {
+    QuantStats st;
+    for (const auto& p : params) {
+        Matrix& W = p.value();
+        QuantizedMatrix qm = quantize_per_col(W);
+        Matrix deq = dequantize(qm);
+        for (std::size_t i = 0; i < W.rows(); ++i)
+            for (std::size_t j = 0; j < W.cols(); ++j) W(i, j) = deq(i, j);
+        st.float_bytes += W.size() * 4;  // float32
+        st.int8_bytes += qm.bytes();     // int8 + scale
+    }
+    return st;
+}
 
 Linear::Linear(std::size_t in_features, std::size_t out_features, Rng& rng)
     : W_(Matrix(in_features, out_features, 0.0)), b_(Matrix(1, out_features, 0.0)) {

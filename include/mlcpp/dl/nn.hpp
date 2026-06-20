@@ -57,4 +57,15 @@ double clip_grad_norm(const std::vector<Tensor>& params, double max_norm);
 // Lịch học rate: warmup tuyến tính rồi giảm theo cosine về ~0.
 double cosine_lr(int step, int total_steps, double base_lr, int warmup_steps);
 
+// Dung lượng trọng số: so sánh float32 với int8 sau lượng tử hóa.
+struct QuantStats {
+    std::size_t float_bytes = 0;
+    std::size_t int8_bytes = 0;
+    double ratio() const { return int8_bytes ? static_cast<double>(float_bytes) / int8_bytes : 0.0; }
+};
+
+// Lượng tử hóa int8 mọi tham số TẠI CHỖ: mỗi ma trận trọng số được nén int8 rồi
+// giải lượng tử ghi đè lại (mô phỏng độ chính xác int8). Trả về dung lượng để so sánh.
+QuantStats quantize_params_in_place(const std::vector<Tensor>& params);
+
 }  // namespace mlcpp

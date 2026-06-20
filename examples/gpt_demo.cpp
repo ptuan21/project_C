@@ -2,8 +2,8 @@
 // Kỹ thuật: mini-batch (gradient accumulation), gradient clipping, AdamW, LR schedule,
 //           đánh giá bằng perplexity, lấy mẫu top-k / top-p.
 //   ./build/gpt_demo [số_bước] [đường_dẫn_văn_bản]
-//     vd: ./build/gpt_demo 2000 data/vietnamese.txt
-//   Mặc định 2000 bước, đọc data/input.txt nếu có.
+//   Mặc định 2000 bước, corpus data/vietnamese_large.txt
+//   (tạo bằng: python3 scripts/get_vietnamese_corpus.py)
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -39,7 +39,9 @@ static std::vector<double> last_logits(const Tensor& logits, std::size_t vocab) 
 
 int main(int argc, char** argv) {
     int steps = argc > 1 ? std::atoi(argv[1]) : 2000;
-    const char* path = argc > 2 ? argv[2] : "data/input.txt";
+    const char* path = argc > 2 ? argv[2] : "data/vietnamese_large.txt";
+    // argv[3] = "char" để ép token mức ký tự (mặc định: mức từ — tự nhiên hơn cho tiếng Việt)
+    bool word_level = !(argc > 3 && std::string(argv[3]) == "char");
 
     // 1) Nạp văn bản
     std::string text;
@@ -51,25 +53,30 @@ int main(int argc, char** argv) {
         std::printf("Dùng %s (%zu byte)\n", path, text.size());
     } else {
         text = kCorpus;
-        std::printf("Không thấy %s -> dùng corpus nhúng sẵn (%zu byte).\n", path, text.size());
-        std::printf("Gợi ý: bash scripts/get_shakespeare.sh  hoặc  ./build/gpt_demo 2000 data/vietnamese.txt\n");
+        std::printf("Không thấy %s -> dùng corpus mẫu nhỏ (%zu byte).\n", path, text.size());
+        std::printf("Gợi ý: python3 scripts/get_vietnamese_corpus.py  để tạo corpus lớn.\n");
     }
 
-    // 2) Tokenizer mức ký tự UTF-8 (đúng cho tiếng Việt)
-    CharTokenizer tok;
-    tok.build(text);
+    // 2) Tokenizer: mức từ (âm tiết) cho tiếng Việt tự nhiên hơn, hoặc mức ký tự
+    Tokenizer tok;
+    if (word_level)
+        tok.build(text, Tokenizer::Level::Word, 12000);  // giữ 12k token hay gặp nhất
+    else
+        tok.build(text, Tokenizer::Level::Char);
     std::size_t vocab = tok.vocab_size();
     std::vector<int> data = tok.encode(text);
+    std::printf("token: mức %s | vocab=%zu\n", word_level ? "TỪ" : "ký tự", vocab);
 
     // 3) Chia train / validation (90 / 10)
     std::size_t n_train = data.size() * 9 / 10;
     std::vector<int> train(data.begin(), data.begin() + n_train);
     std::vector<int> val(data.begin() + n_train, data.end());
-    std::printf("vocab=%zu | train=%zu | val=%zu token\n\n", vocab, train.size(), val.size());
+    std::printf("train=%zu | val=%zu token\n\n", train.size(), val.size());
 
-    // 4) Mô hình + optimizer (AdamW)
+    // 4) Mô hình + optimizer (AdamW). Word-level dùng model lớn hơn một chút.
     Rng rng(2026);
-    GPTConfig cfg{vocab, 128, 4, 3, 64};  // n_embd=128, 4 đầu, 3 lớp, ngữ cảnh 64
+    GPTConfig cfg = word_level ? GPTConfig{vocab, 192, 6, 4, 64}   // n_embd=192, 6 đầu, 4 lớp
+                               : GPTConfig{vocab, 128, 4, 3, 64};
     GPT model(cfg, rng);
     auto params = model.params();
     double base_lr = 3e-4;
@@ -120,25 +127,32 @@ int main(int argc, char** argv) {
                         loss_sum / batch, opt.lr(), gnorm, perplexity(val, 20));
         }
     }
-    std::printf("\nTrain ppl=%.2f | Val ppl=%.2f  (gần nhau => không overfit)\n", perplexity(train, 40),
-                perplexity(val, 40));
+    std::printf("\nTrain ppl=%.2f | Val ppl=%.2f  (gần nhau => không overfit)\n",
+                perplexity(train, 40), perplexity(val, 40));
 
     // 6) Sinh văn bản với lấy mẫu top-k / top-p
-    std::vector<int> ctx(data.begin(), data.begin() + std::min<std::size_t>(12, data.size()));
-
     SampleConfig sc;
     sc.temperature = 0.8;
     sc.top_k = 40;
     sc.top_p = 0.9;
+    auto generate = [&]() {
+        std::vector<int> ctx(data.begin(), data.begin() + std::min<std::size_t>(16, data.size()));
+        for (int i = 0; i < 400; ++i) {
+            std::vector<int> win = ctx;
+            if (win.size() > T) win.erase(win.begin(), win.end() - T);
+            ctx.push_back(sample_logits(last_logits(model.forward(win), vocab), sc, rng));
+        }
+        return tok.decode(ctx);
+    };
 
-    std::printf("\n--- Sinh 400 ký tự (temp=%.1f, top_k=%d, top_p=%.2f) ---\n", sc.temperature,
-                sc.top_k, sc.top_p);
-    for (int i = 0; i < 400; ++i) {
-        std::vector<int> win = ctx;
-        if (win.size() > T) win.erase(win.begin(), win.end() - T);
-        int nx = sample_logits(last_logits(model.forward(win), vocab), sc, rng);
-        ctx.push_back(nx);
-    }
-    std::printf("%s\n", tok.decode(ctx).c_str());
+    std::printf("\n--- float32 (temp=%.1f, top_k=%d, top_p=%.2f) ---\n", sc.temperature, sc.top_k,
+                sc.top_p);
+    std::printf("%s\n", generate().c_str());
+
+    // 7) Lượng tử hóa int8 -> nhẹ ~4x, kiểm tra chất lượng còn giữ
+    QuantStats st = quantize_params_in_place(model.params());
+    std::printf("\n[int8] Trọng số: %.0f KB -> %.0f KB (nhẹ %.1fx) | Val ppl=%.2f\n",
+                st.float_bytes / 1024.0, st.int8_bytes / 1024.0, st.ratio(), perplexity(val, 40));
+    std::printf("--- int8 ---\n%s\n", generate().c_str());
     return 0;
 }

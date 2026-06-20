@@ -10,7 +10,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 add_compile_options(-Wall -Wextra)
 
-file(GLOB LIB_SRC src/*.cpp)
+file(GLOB_RECURSE LIB_SRC src/*.cpp)
 add_library(mlcpp ${LIB_SRC})
 target_include_directories(mlcpp PUBLIC include)
 
