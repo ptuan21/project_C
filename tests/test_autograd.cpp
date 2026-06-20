@@ -1,9 +1,9 @@
 #include <functional>
 #include <vector>
 
-#include "mlcpp/autograd.hpp"
-#include "mlcpp/nn.hpp"
-#include "mlcpp/random.hpp"
+#include "mlcpp/dl/autograd.hpp"
+#include "mlcpp/dl/nn.hpp"
+#include "mlcpp/prob/random.hpp"
 #include "test_framework.hpp"
 
 using namespace mlcpp;

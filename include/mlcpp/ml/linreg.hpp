@@ -1,7 +1,7 @@
 #pragma once
 // mlcpp — hồi quy tuyến tính (linear regression).
 // y ≈ X * w + b. Bias được xử lý nội bộ bằng cách thêm một cột toàn số 1.
-#include "mlcpp/matrix.hpp"
+#include "mlcpp/core/matrix.hpp"
 
 namespace mlcpp {
 

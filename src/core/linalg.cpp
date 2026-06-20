@@ -1,4 +1,4 @@
-#include "mlcpp/linalg.hpp"
+#include "mlcpp/core/linalg.hpp"
 
 #include <cmath>
 #include <stdexcept>

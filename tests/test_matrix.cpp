@@ -1,4 +1,4 @@
-#include "mlcpp/matrix.hpp"
+#include "mlcpp/core/matrix.hpp"
 #include "test_framework.hpp"
 
 using namespace mlcpp;

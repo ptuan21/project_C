@@ -1,7 +1,7 @@
 #include <vector>
 
-#include "mlcpp/random.hpp"
-#include "mlcpp/stats.hpp"
+#include "mlcpp/prob/random.hpp"
+#include "mlcpp/prob/stats.hpp"
 #include "test_framework.hpp"
 
 using namespace mlcpp;

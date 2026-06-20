@@ -1,8 +1,8 @@
-#include "mlcpp/linreg.hpp"
+#include "mlcpp/ml/linreg.hpp"
 
 #include <stdexcept>
 
-#include "mlcpp/linalg.hpp"
+#include "mlcpp/core/linalg.hpp"
 
 namespace mlcpp {
 

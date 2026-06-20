@@ -1,4 +1,4 @@
-#include "mlcpp/stats.hpp"
+#include "mlcpp/prob/stats.hpp"
 
 #include <algorithm>
 #include <cmath>

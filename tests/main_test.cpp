@@ -7,6 +7,9 @@ void test_stats();
 void test_linalg();
 void test_regression();
 void test_autograd();
+void test_transformer();
+void test_optim();
+void test_tokenizer();
 
 int main() {
     test_matrix();
@@ -15,5 +18,8 @@ int main() {
     test_linalg();
     test_regression();
     test_autograd();
+    test_transformer();
+    test_optim();
+    test_tokenizer();
     return test::summary();
 }

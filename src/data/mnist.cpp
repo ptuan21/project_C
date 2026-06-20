@@ -1,4 +1,4 @@
-#include "mlcpp/mnist.hpp"
+#include "mlcpp/data/mnist.hpp"
 
 #include <cstdint>
 #include <fstream>

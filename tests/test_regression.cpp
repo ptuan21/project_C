@@ -1,7 +1,7 @@
-#include "mlcpp/linreg.hpp"
-#include "mlcpp/logreg.hpp"
-#include "mlcpp/matrix.hpp"
-#include "mlcpp/random.hpp"
+#include "mlcpp/ml/linreg.hpp"
+#include "mlcpp/ml/logreg.hpp"
+#include "mlcpp/core/matrix.hpp"
+#include "mlcpp/prob/random.hpp"
 #include "test_framework.hpp"
 
 using namespace mlcpp;

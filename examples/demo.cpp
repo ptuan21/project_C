@@ -3,9 +3,9 @@
 #include <cstdio>
 #include <vector>
 
-#include "mlcpp/matrix.hpp"
-#include "mlcpp/random.hpp"
-#include "mlcpp/stats.hpp"
+#include "mlcpp/core/matrix.hpp"
+#include "mlcpp/prob/random.hpp"
+#include "mlcpp/prob/stats.hpp"
 
 using namespace mlcpp;
 

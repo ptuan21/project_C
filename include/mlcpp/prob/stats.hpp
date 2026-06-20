@@ -2,7 +2,7 @@
 // mlcpp — thống kê mô tả: mean, variance, covariance, correlation, percentile.
 #include <vector>
 
-#include "mlcpp/matrix.hpp"
+#include "mlcpp/core/matrix.hpp"
 
 namespace mlcpp {
 

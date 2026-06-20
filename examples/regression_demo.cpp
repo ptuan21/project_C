@@ -1,10 +1,10 @@
 // Demo Tầng 3: linear regression (2 cách) + logistic regression.
 #include <cstdio>
 
-#include "mlcpp/linreg.hpp"
-#include "mlcpp/logreg.hpp"
-#include "mlcpp/matrix.hpp"
-#include "mlcpp/random.hpp"
+#include "mlcpp/ml/linreg.hpp"
+#include "mlcpp/ml/logreg.hpp"
+#include "mlcpp/core/matrix.hpp"
+#include "mlcpp/prob/random.hpp"
 
 using namespace mlcpp;
 

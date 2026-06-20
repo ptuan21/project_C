@@ -1,5 +1,6 @@
-#include "mlcpp/nn.hpp"
+#include "mlcpp/dl/nn.hpp"
 
+#include <algorithm>
 #include <cmath>
 
 namespace mlcpp {
@@ -25,8 +26,14 @@ void SGD::step() {
                 p.value()(i, j) -= lr_ * p.grad()(i, j);
 }
 
-Adam::Adam(std::vector<Tensor> params, double lr, double beta1, double beta2, double eps)
-    : params_(std::move(params)), lr_(lr), beta1_(beta1), beta2_(beta2), eps_(eps) {
+Adam::Adam(std::vector<Tensor> params, double lr, double beta1, double beta2, double eps,
+           double weight_decay)
+    : params_(std::move(params)),
+      lr_(lr),
+      beta1_(beta1),
+      beta2_(beta2),
+      eps_(eps),
+      wd_(weight_decay) {
     for (auto& p : params_) {
         m_.emplace_back(p.value().rows(), p.value().cols(), 0.0);
         v_.emplace_back(p.value().rows(), p.value().cols(), 0.0);
@@ -53,9 +60,39 @@ void Adam::step() {
                 v(i, j) = beta2_ * v(i, j) + (1.0 - beta2_) * gr * gr;
                 double mhat = m(i, j) / bc1;
                 double vhat = v(i, j) / bc2;
-                w(i, j) -= lr_ * mhat / (std::sqrt(vhat) + eps_);
+                // AdamW: suy giảm trọng số tách rời khỏi bước Adam.
+                w(i, j) -= lr_ * (mhat / (std::sqrt(vhat) + eps_) + wd_ * w(i, j));
             }
     }
+}
+
+double clip_grad_norm(const std::vector<Tensor>& params, double max_norm) {
+    double total = 0.0;
+    for (const auto& p : params) {
+        const Matrix& g = p.grad();
+        for (std::size_t i = 0; i < g.rows(); ++i)
+            for (std::size_t j = 0; j < g.cols(); ++j) total += g(i, j) * g(i, j);
+    }
+    total = std::sqrt(total);
+    if (total > max_norm) {
+        double scale = max_norm / (total + 1e-6);
+        for (auto& p : params) {
+            Matrix& g = p.grad();
+            for (std::size_t i = 0; i < g.rows(); ++i)
+                for (std::size_t j = 0; j < g.cols(); ++j) g(i, j) *= scale;
+        }
+    }
+    return total;
+}
+
+double cosine_lr(int step, int total_steps, double base_lr, int warmup_steps) {
+    if (step < warmup_steps) return base_lr * static_cast<double>(step) / std::max(1, warmup_steps);
+    double progress = static_cast<double>(step - warmup_steps) /
+                      std::max(1, total_steps - warmup_steps);
+    if (progress > 1.0) progress = 1.0;
+    // Giảm cosine từ base_lr về 10% base_lr.
+    double cos = 0.5 * (1.0 + std::cos(3.14159265358979 * progress));
+    return base_lr * (0.1 + 0.9 * cos);
 }
 
 }  // namespace mlcpp

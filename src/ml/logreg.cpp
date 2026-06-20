@@ -1,4 +1,4 @@
-#include "mlcpp/logreg.hpp"
+#include "mlcpp/ml/logreg.hpp"
 
 #include <cmath>
 #include <stdexcept>

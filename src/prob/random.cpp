@@ -1,4 +1,4 @@
-#include "mlcpp/random.hpp"
+#include "mlcpp/prob/random.hpp"
 
 #include <cmath>
 

@@ -5,7 +5,7 @@
 #include <memory>
 #include <vector>
 
-#include "mlcpp/matrix.hpp"
+#include "mlcpp/core/matrix.hpp"
 
 namespace mlcpp {
 
@@ -46,5 +46,23 @@ Tensor relu(const Tensor& a);
 // Softmax + cross-entropy gộp (ổn định số học). labels là chỉ số lớp [0..C-1].
 // Trả về loss vô hướng (1x1) đã lấy trung bình theo batch.
 Tensor cross_entropy(const Tensor& logits, const std::vector<int>& labels);
+
+// --- Các phép bổ sung cho Transformer ---
+Tensor mul(const Tensor& a, double s);     // nhân vô hướng
+Tensor transpose(const Tensor& a);         // chuyển vị
+Tensor softmax_rows(const Tensor& a);      // softmax theo từng hàng
+Tensor gelu(const Tensor& a);              // GELU chính xác (dùng erf)
+
+// Layer normalization theo từng hàng. gamma, beta có dạng (1 x D).
+Tensor layernorm(const Tensor& x, const Tensor& gamma, const Tensor& beta, double eps = 1e-5);
+
+// Tra cứu embedding: trả về (len(ids) x D), mỗi hàng là một dòng của bảng.
+Tensor embedding(const Tensor& table, const std::vector<int>& ids);
+
+// Cắt w cột liên tiếp bắt đầu từ cột c0 (dùng để tách các đầu attention).
+Tensor slice_cols(const Tensor& a, std::size_t c0, std::size_t w);
+
+// Ghép nhiều tensor theo chiều cột (gộp các đầu attention lại).
+Tensor concat_cols(const std::vector<Tensor>& parts);
 
 }  // namespace mlcpp

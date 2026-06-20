@@ -3,10 +3,10 @@
 #include <cstdio>
 #include <vector>
 
-#include "mlcpp/autograd.hpp"
-#include "mlcpp/mnist.hpp"
-#include "mlcpp/nn.hpp"
-#include "mlcpp/random.hpp"
+#include "mlcpp/dl/autograd.hpp"
+#include "mlcpp/data/mnist.hpp"
+#include "mlcpp/dl/nn.hpp"
+#include "mlcpp/prob/random.hpp"
 
 using namespace mlcpp;
 

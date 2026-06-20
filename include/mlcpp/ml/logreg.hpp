@@ -1,7 +1,7 @@
 #pragma once
 // mlcpp — hồi quy logistic (logistic regression) cho phân loại nhị phân.
 // P(y=1 | x) = sigmoid(X * w + b). Huấn luyện bằng gradient descent.
-#include "mlcpp/matrix.hpp"
+#include "mlcpp/core/matrix.hpp"
 
 namespace mlcpp {
 

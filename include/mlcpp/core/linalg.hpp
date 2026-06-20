@@ -1,6 +1,6 @@
 #pragma once
 // mlcpp — đại số tuyến tính: giải hệ phương trình & nghịch đảo bằng phân rã LU.
-#include "mlcpp/matrix.hpp"
+#include "mlcpp/core/matrix.hpp"
 
 namespace mlcpp {
 

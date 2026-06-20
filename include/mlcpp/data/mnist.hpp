@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "mlcpp/matrix.hpp"
+#include "mlcpp/core/matrix.hpp"
 
 namespace mlcpp {
 

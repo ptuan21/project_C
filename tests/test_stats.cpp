@@ -1,7 +1,7 @@
 #include <vector>
 
-#include "mlcpp/matrix.hpp"
-#include "mlcpp/stats.hpp"
+#include "mlcpp/core/matrix.hpp"
+#include "mlcpp/prob/stats.hpp"
 #include "test_framework.hpp"
 
 using namespace mlcpp;
