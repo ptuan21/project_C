@@ -1,8 +1,4 @@
 # mlcpp — Thư viện ML/DL từ con số 0 (C++)
-
-Một dự án học tập tự xây dựng thư viện máy học / học sâu bằng C++ thuần,
-tối ưu cho **MacBook Air M1** (dùng Accelerate framework của Apple thay cho CUDA).
-
 Mỗi tầng tái sử dụng code của tầng trước — cuối cùng bạn có một thư viện ML/DL
 hoàn chỉnh do chính mình viết.
 
@@ -96,32 +92,3 @@ examples/        # demo.cpp (T1-2), regression_demo.cpp (T3),
                  # mlp_demo.cpp + mnist_demo.cpp (T4), gpt_demo.cpp (T5)
 ```
 
-## Ghi chú về Apple Silicon (M1)
-- **Không có CUDA** (đó là của NVIDIA). Không cần GPU để học ML/DL.
-- `Matrix::matmul` dùng `cblas_dgemm` của **Accelerate** — rất nhanh trên M1.
-  Tắt bằng cách bỏ `-DMLCPP_USE_ACCELERATE` (sẽ rơi về vòng lặp ngây thơ để so sánh).
-- Bài tập hiệu năng tốt: tự viết matmul có blocking + ARM NEON, rồi benchmark
-  với Accelerate.
-
-## Roadmap (lộ trình kết hợp)
-
-- [x] **Tầng 1–2** — Ma trận, xác suất, thống kê
-- [x] **Tầng 3a** — Đại số tuyến tính (LU solve/inverse) + linear/logistic regression
-- [ ] **Tầng 3b** — Còn lại của ML cổ điển: K-Means, PCA, regularization (Ridge/Lasso)
-- [x] **Tầng 4** — Deep learning: Tensor + autograd + Linear + ReLU + SGD/Adam, train MNIST (~97% test acc)
-- [x] **Tầng 5** — Transformer (GPT char-level): self-attention + LayerNorm + GELU, train & sinh văn bản
-- [x] **Tối ưu huấn luyện** — AdamW + gradient clipping + cosine LR + mini-batch + perplexity + top-k/top-p
-- [x] **Multi-head attention** — tách/gộp đầu attention qua slice_cols/concat_cols (gradient-checked) *(đang ở đây)*
-- [x] **Tokenizer UTF-8** — CharTokenizer cho tiếng Việt (output luôn hợp lệ)
-- [ ] **Mở rộng** — load trọng số GPT-2 thật, KV-cache, dropout, lượng tử hóa
-
-### Gợi ý các bước tiếp theo (Tầng 3)
-1. Thêm `solve()` / nghịch đảo ma trận (phân rã LU hoặc Cholesky) vào `Matrix`.
-2. Viết module `linear_regression`: nghiệm chuẩn (normal equation) **và** gradient descent.
-3. Viết `logistic_regression` (tái dùng sigmoid + gradient descent).
-4. Tải một dataset nhỏ qua `read_csv` và huấn luyện thử.
-
-## Ý tưởng bài tập mở rộng
-- Thêm kiểm định chi-square cho RNG (so histogram với phân phối lý thuyết).
-- Thêm Monte Carlo ước lượng π và tích phân số.
-- Benchmark matmul: ngây thơ vs Accelerate ở nhiều kích thước.
