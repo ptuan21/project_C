@@ -2,15 +2,15 @@
 build/
 *.o
 
-# Corpus / dữ liệu lớn (tạo lại bằng scripts/)
-data/vietnamese_large.txt
+# Corpus / dữ liệu lớn & patent data
+data/
+patent/scrape/
 
-# Dữ liệu patent (rất lớn / sinh ra) — thuộc dự án patent riêng
-data/uspto_out/
-data/patent_index/
-
-# Trọng số đã lưu
-*.bin
-
-# Log
+# Log & Binaries
 *.log
+*.bin
+*.onnx
+
+# Python cache
+__pycache__/
+*.pyc

@@ -23,20 +23,35 @@ TITLES = [
     "Khoa học", "Vật lý học", "Hóa học", "Sinh học", "Toán học", "Thiên văn học",
     "Vũ trụ", "Trái Đất", "Tiến hóa", "Di truyền học", "Năng lượng", "Nguyên tử",
     "Ánh sáng", "Điện", "Trí tuệ nhân tạo", "Máy tính", "Internet", "Robot",
-    # Y học
+    "Học máy", "Thuật toán", "Cơ sở dữ liệu", "Hệ điều hành", "Mạng máy tính",
+    "Kỹ thuật phần mềm", "Mật mã học", "Điện tử học", "Vật liệu học",
+    # Y học & Sức khỏe
     "Y học", "Giải phẫu người", "Tim", "Não người", "Máu", "Vi khuẩn", "Virus",
     "Vắc-xin", "Kháng sinh", "Hệ miễn dịch", "Ung thư", "Đái tháo đường",
-    "Dinh dưỡng", "COVID-19", "Tế bào", "DNA",
-    # Văn học
+    "Dinh dưỡng", "COVID-19", "Tế bào", "DNA", "Tế bào gốc", "Hệ thần kinh",
+    "Hệ tuần hoàn", "Hệ tiêu hóa", "Hệ hô hấp", "Dược lý học", "Sức khỏe tâm thần",
+    # Văn học & Nghệ thuật
     "Văn học", "Văn học Việt Nam", "Thơ", "Tiểu thuyết", "Truyện Kiều", "Nguyễn Du",
     "Nam Cao", "Ngô Tất Tố", "Tố Hữu", "Xuân Diệu", "Hồ Xuân Hương", "Văn học dân gian",
-    # Chính trị & xã hội
+    "Nghệ thuật", "Điện ảnh", "Hội họa", "Âm nhạc Việt Nam", "Kiến trúc", "Điêu khắc",
+    "Chèo", "Cải lương", "Trịnh Công Sơn",
+    # Chính trị, Luật & Xã hội
     "Chính trị", "Nhà nước", "Dân chủ", "Hiến pháp", "Quốc hội", "Pháp luật",
     "Việt Nam", "Hồ Chí Minh", "Liên Hợp Quốc", "Kinh tế", "Đảng Cộng sản Việt Nam",
+    "Toàn cầu hóa", "Xã hội học", "Nhân học", "Luật dân sự", "Luật hình sự",
+    "Luật pháp Việt Nam", "Tổ chức Thương mại Thế giới", "Hiệp hội các quốc gia Đông Nam Á",
     # Lịch sử, địa lý, văn hóa
     "Lịch sử Việt Nam", "Hà Nội", "Thành phố Hồ Chí Minh", "Địa lý Việt Nam",
     "Triết học", "Văn hóa Việt Nam", "Giáo dục", "Âm nhạc", "Phật giáo", "Ngôn ngữ",
+    "Lịch sử thế giới", "Cách mạng công nghiệp", "Thế chiến thứ nhất", "Thế chiến thứ hai",
+    "Bản đồ học", "Đông Nam Á", "Biển Đông", "Sông Mê Kông", "Sông Hồng",
+    "Hải Phòng", "Đà Nẵng", "Cần Thơ", "Huế", "Sa Pa", "Vịnh Hạ Long",
+    "Khổng giáo", "Đạo giáo", "Kitô giáo", "Hồi giáo", "Phong tục tập quán Việt Nam",
+    "Tết Nguyên Đán", "Ẩm thực Việt Nam",
+    # Thể thao
+    "Bóng đá", "Thể thao Việt Nam", "Thế vận hội",
 ]
+
 
 API = "https://vi.wikipedia.org/w/api.php"
 

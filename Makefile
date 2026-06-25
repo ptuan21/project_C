@@ -1,7 +1,8 @@
-# Makefile cho mlcpp — chạy được ngay trên macOS (Apple Silicon) không cần cmake.
-CXX      := clang++
-CXXFLAGS := -std=c++17 -O2 -Wall -Wextra -Iinclude
-LDFLAGS  :=
+# Makefile — dự án 3 mảng: lib/ (thư viện mlcpp), apps/ (demo GPT), patent/ (hệ thống patent).
+# Chạy ngay trên macOS (Apple Silicon) không cần cmake.
+CXX      := g++
+CXXFLAGS := -std=c++17 -O2 -Wall -Wextra -fopenmp -Ilib/include
+LDFLAGS  := -fopenmp
 
 # Trên macOS, dùng Accelerate framework cho phép nhân ma trận tối ưu.
 UNAME_S := $(shell uname -s)
@@ -10,37 +11,50 @@ ifeq ($(UNAME_S),Darwin)
   LDFLAGS  += -framework Accelerate
 endif
 
-BUILD        := build
-SRC          := $(shell find src -name '*.cpp')
-OBJ          := $(SRC:.cpp=.o)
-TEST_SRC     := $(wildcard tests/*.cpp)
-EXAMPLES     := $(wildcard examples/*.cpp)
-EXAMPLE_BINS := $(patsubst examples/%.cpp,$(BUILD)/%,$(EXAMPLES))
+BUILD     := build
+LIB_SRC   := $(shell find lib/src -name '*.cpp')
+LIB_OBJ   := $(LIB_SRC:.cpp=.o)
+TEST_SRC  := $(wildcard tests/*.cpp)
+APPS      := $(wildcard apps/*.cpp)
+APP_BINS  := $(patsubst apps/%.cpp,$(BUILD)/%,$(APPS))
+PATENT_SRC := $(shell find patent/src -name '*.cpp' 2>/dev/null)
 
-.PHONY: all demo test clean portable
+.PHONY: all apps test clean portable patent patent-test
 
-all: demo test
+all: apps test
 
-# --- build GPT inference portable: thuần C++, KHÔNG Accelerate (chạy mọi bo mạch) ---
-PORTABLE_SRC := $(shell find src -name '*.cpp')
-portable: | $(BUILD)
-	$(CXX) -std=c++17 -O2 -Iinclude $(PORTABLE_SRC) examples/gpt_demo.cpp \
-	  -o $(BUILD)/gpt_portable
-	@echo ">> Đã build portable (không Accelerate): $(BUILD)/gpt_portable"
+# --- demo GPT: build mọi file trong apps/ ---
+apps: $(APP_BINS)
+	@echo ">> Đã build: $(APP_BINS)"
 
-# --- demo: build mọi file trong examples/ ---
-demo: $(EXAMPLE_BINS)
-	@echo ">> Đã build: $(EXAMPLE_BINS)"
+$(BUILD)/%: apps/%.cpp $(LIB_OBJ) | $(BUILD)
+	$(CXX) $(CXXFLAGS) $(LIB_OBJ) $< -o $@ $(LDFLAGS)
 
-$(BUILD)/%: examples/%.cpp $(OBJ) | $(BUILD)
-	$(CXX) $(CXXFLAGS) $(OBJ) $< -o $@ $(LDFLAGS)
+# --- hệ thống patent (CLI) ---
+patent: patent/cli/patent.cpp $(LIB_OBJ) $(PATENT_SRC) | $(BUILD)
+	$(CXX) $(CXXFLAGS) -Ipatent/include $(LIB_OBJ) $(PATENT_SRC) patent/cli/patent.cpp \
+	  -o $(BUILD)/patent $(LDFLAGS)
+	@echo ">> Đã build: $(BUILD)/patent"
+
+# --- test patent (BM25 + risk) ---
+patent-test: | $(BUILD)
+	$(CXX) $(CXXFLAGS) -Ipatent/include -Itests \
+	  patent/src/bm25.cpp patent/src/risk.cpp lib/src/data/tokenizer.cpp \
+	  patent/tests/test_bm25.cpp patent/tests/test_risk.cpp patent/tests/main.cpp \
+	  -o $(BUILD)/patent_test $(LDFLAGS)
+	@./$(BUILD)/patent_test
 
 # --- test ---
 test: $(BUILD)/run_tests
 	@./$(BUILD)/run_tests
 
-$(BUILD)/run_tests: $(OBJ) $(TEST_SRC) | $(BUILD)
-	$(CXX) $(CXXFLAGS) -Itests $(OBJ) $(TEST_SRC) -o $@ $(LDFLAGS)
+$(BUILD)/run_tests: $(LIB_OBJ) $(TEST_SRC) | $(BUILD)
+	$(CXX) $(CXXFLAGS) -Itests $(LIB_OBJ) $(TEST_SRC) -o $@ $(LDFLAGS)
+
+# --- GPT inference portable: thuần C++, KHÔNG Accelerate (bo mạch yếu) ---
+portable: | $(BUILD)
+	$(CXX) -std=c++17 -O2 -Ilib/include $(LIB_SRC) apps/gpt_demo.cpp -o $(BUILD)/gpt_portable
+	@echo ">> Đã build portable (không Accelerate): $(BUILD)/gpt_portable"
 
 # --- quy tắc chung ---
 %.o: %.cpp
@@ -50,5 +64,5 @@ $(BUILD):
 	@mkdir -p $(BUILD)
 
 clean:
-	find src -name '*.o' -delete
+	find lib/src patent -name '*.o' -delete 2>/dev/null || true
 	rm -rf $(BUILD)

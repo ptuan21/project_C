@@ -1,0 +1,278 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Patent Report</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg-color: #0b0f19;
+  --panel-bg: rgba(22, 28, 45, 0.6);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --primary-accent: #3b82f6;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+body{
+  font-family: 'Outfit', sans-serif;
+  margin: 0;
+  background-color: var(--bg-color);
+  background-image: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.1) 0, transparent 50%),
+                    radial-gradient(at 50% 0%, rgba(16, 185, 129, 0.05) 0, transparent 50%);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+header{
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 24px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+header h1{
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #60a5fa, #34d399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+header .q{
+  color: var(--text-secondary);
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 8px 16px;
+  border-radius: 99px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wrap{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 32px;
+  padding: 40px;
+}
+.col{
+  background: var(--panel-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+h2{
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 24px;
+  color: #fff;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.qimg-container{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 16px;
+  align-items: center;
+}
+.qimg-label{
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  align-self: flex-start;
+}
+.qimg{
+  max-height: 240px;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #111827;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease;
+}
+.qimg:hover{
+  transform: scale(1.02);
+}
+.ucard{
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+.ucard:hover{
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+.urisk{
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+.utitle{
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #fff;
+  line-height: 1.4;
+}
+.umeta{
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.uclaim{
+  color: #d1d5db;
+  font-size: 13px;
+  line-height: 1.6;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+.dgrid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+.dcard{
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+.dcard:hover{
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+}
+.dcard img{
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  background: #111827;
+  border-bottom: 1px solid var(--border-color);
+  transition: transform 0.5s ease;
+}
+.dcard:hover img{
+  transform: scale(1.05);
+}
+.dbar{
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 12px;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
+}
+.dmeta{
+  padding: 14px;
+  font-size: 13px;
+  line-height: 1.4;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.dmeta b{
+  color: #fff;
+  font-size: 14px;
+}
+.dsub{
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+.foot{
+  padding: 30px 40px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  background: rgba(17, 24, 39, 0.4);
+  margin-top: 40px;
+}
+</style></head><body>
+<header><h1>🛡️ Báo cáo sàng lọc rủi ro patent</h1>
+<div class="q">Sản phẩm: "Wheelbarrow" · có ảnh</div></header>
+<div class="wrap">
+  <div class="col"><h2>① UTILITY — công năng (claims)</h2><p>Không tìm thấy patent utility liên quan.</p></div>
+  <div class="col"><h2>② DESIGN — kiểu dáng</h2>
+        <div class="qimg-container">
+          <div class="qimg-label">Ảnh truy vấn của bạn:</div>
+          <img class="qimg" src="data/test_photos/Wheelbarrow.jpg">
+        </div>
+        <div class="dgrid">
+        <div class="dcard" style="border-color:#e67e22">
+          <div class="dbar" style="background:#e67e22">51%</div>
+          <img src="data/patent_figures/figures/US-D1009270-S/006.png">
+          <div class="dmeta"><b>US-D1009270-S</b><br>Bed for inversion device<br>
+            <span class="dsub">Expectations LLC<br>CÒN HIỆU LỰC · ảnh 62% · text 70%</span></div>
+        </div>
+        <div class="dcard" style="border-color:#e67e22">
+          <div class="dbar" style="background:#e67e22">50%</div>
+          <img src="data/patent_figures/figures/US-D1000079-S/041.png">
+          <div class="dmeta"><b>US-D1000079-S</b><br>Footbed for a shoe<br>
+            <span class="dsub">Frankie4 IP1 Pty Ltd<br>CÒN HIỆU LỰC · ảnh 63% · text 62%</span></div>
+        </div>
+        <div class="dcard" style="border-color:#e67e22">
+          <div class="dbar" style="background:#e67e22">50%</div>
+          <img src="data/patent_figures/figures/US-D1002170-S/004.png">
+          <div class="dmeta"><b>US-D1002170-S</b><br>Orthopedic insole<br>
+            <span class="dsub">Individual<br>CÒN HIỆU LỰC · ảnh 66% · text 52%</span></div>
+        </div>
+        <div class="dcard" style="border-color:#e67e22">
+          <div class="dbar" style="background:#e67e22">49%</div>
+          <img src="data/patent_figures/figures/US-D1004199-S/006.png">
+          <div class="dmeta"><b>US-D1004199-S</b><br>Comb for trimmer<br>
+            <span class="dsub">Koninklijke Philips NV<br>CÒN HIỆU LỰC · ảnh 58% · text 72%</span></div>
+        </div>
+        <div class="dcard" style="border-color:#e67e22">
+          <div class="dbar" style="background:#e67e22">49%</div>
+          <img src="data/patent_figures/figures/US-D1005157-S/001.png">
+          <div class="dmeta"><b>US-D1005157-S</b><br>Pair of earrings<br>
+            <span class="dsub">Harry Winston SA<br>CÒN HIỆU LỰC · ảnh 66% · text 49%</span></div>
+        </div>
+        <div class="dcard" style="border-color:#e67e22">
+          <div class="dbar" style="background:#e67e22">49%</div>
+          <img src="data/patent_figures/figures/US-D1009579-S/000.png">
+          <div class="dmeta"><b>US-D1009579-S</b><br>Spatula<br>
+            <span class="dsub">Individual<br>CÒN HIỆU LỰC · ảnh 62% · text 61%</span></div>
+        </div></div></div>
+</div>
+<div class="foot">⚠️ Sàng lọc tự động — KHÔNG phải tư vấn pháp lý / FTO. Ảnh thật nên kèm mô tả.</div>
+</body></html>

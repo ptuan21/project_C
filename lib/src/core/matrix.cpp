@@ -52,6 +52,7 @@ Matrix Matrix::matmul(const Matrix& o) const {
                 0.0, r.data_.data(), static_cast<int>(o.cols_));
 #else
     // Bản ngây thơ, thứ tự i-k-j để thân thiện với cache.
+#pragma omp parallel for
     for (std::size_t i = 0; i < rows_; ++i)
         for (std::size_t k = 0; k < cols_; ++k) {
             double a = (*this)(i, k);
