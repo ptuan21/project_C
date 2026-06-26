@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-# Gom corpus tiếng Việt đa lĩnh vực để train GPT:
-#   - Wikipedia tiếng Việt (khoa học, y học, văn học, chính trị, lịch sử...)
-#   - Truyện Kiều (Nguyễn Du)
-#   - Ca dao - tục ngữ (data/vietnamese.txt)
-# Kết quả: data/vietnamese_large.txt
 import json
 import os
 import re
