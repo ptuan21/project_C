@@ -1,9 +1,3 @@
-// Demo Tầng 5 (tối ưu): GPT char-level với huấn luyện ổn định + lấy mẫu xác suất.
-// Kỹ thuật: mini-batch (gradient accumulation), gradient clipping, AdamW, LR schedule,
-//           đánh giá bằng perplexity, lấy mẫu top-k / top-p.
-//   ./build/gpt_demo [số_bước] [đường_dẫn_văn_bản]
-//   Mặc định 2000 bước, corpus data/vietnamese_large.txt
-//   (tạo bằng: python3 scripts/get_vietnamese_corpus.py)
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
