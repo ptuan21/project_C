@@ -1,5 +1,3 @@
-// Console tương tác để thử nghiệm thư viện mlcpp (mọi tầng).
-//   make demo && ./build/console
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
