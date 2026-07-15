@@ -1,5 +1,3 @@
-// Demo Tầng 1–2: ma trận + xác suất + thống kê.
-// Sinh dữ liệu Gaussian 2 chiều có tương quan, rồi ước lượng lại thống kê.
 #include <cstdio>
 #include <vector>
 
