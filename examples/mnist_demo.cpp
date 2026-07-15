@@ -1,5 +1,3 @@
-// Demo Tầng 4: huấn luyện MLP nhận diện chữ số viết tay MNIST.
-// Cần dữ liệu trong data/ — chạy `bash scripts/get_mnist.sh` để tải.
 #include <cstdio>
 #include <vector>
 
