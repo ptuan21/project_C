@@ -1,5 +1,3 @@
-// Demo Tầng 4: MLP + autograd học ranh giới phi tuyến (hai vòng tròn đồng tâm).
-// Chạy ngay không cần dữ liệu ngoài. Có chia train/test để thấy khả năng tổng quát hóa.
 #include <cmath>
 #include <cstdio>
 #include <vector>
